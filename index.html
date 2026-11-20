@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZoneX — Studio Streetwear &amp; Interactive Storefront</title>
+  <style>
+    :root {
+      --bg: #f3f3f0;
+      --surface: #ffffff;
+      --surface-alt: #f8f8f5;
+      --ink: #111111;
+      --muted: #5f5f5c;
+      --line: #e1e1dc;
+      --shadow: 0 14px 32px rgba(17, 17, 17, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    button, input, select, textarea { font-family: inherit; }
+
+    .topbar {
+      background: var(--ink);
+      color: #ffffff;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand {
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 210px;
+      max-width: 340px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      font-size: 0.88rem;
+    }
+
+    .nav-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: #ffffff;
+      padding: 8px 14px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover { opacity: 0.88; }
+    .btn.secondary { background: transparent; color: var(--ink); }
+    .btn.small { padding: 6px 10px; font-size: 0.78rem; }
+
+    .hero {
+      max-width: 1200px;
+      margin: 26px auto 14px;
+      padding: 0 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.7rem, 3.6vw, 2.55rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    .hero p { color: var(--muted); font-size: 0.96rem; margin-top: 4px; }
+
+    .controls-bar {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      padding: 0 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .cat-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 6px 13px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .pill.active {
+      background: var(--ink);
+      color: #ffffff;
+      border-color: var(--ink);
+    }
+
+    .rack-stage {
+      max-width: 1200px;
+      margin: 0 auto 38px;
+      padding: 0 24px;
+    }
+
+    .rack-bar {
+      height: 6px;
+      background: linear-gradient(90deg, #1a1a1a, #444444, #1a1a1a);
+      border-radius: 999px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .rack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .flip-wrap { perspective: 900px; height: 195px; cursor: pointer; }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.55s ease;
+    }
+
+    .flip-wrap.flipped .flip-inner { transform: rotateY(180deg); }
+
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .flip-back { transform: rotateY(180deg); background: #181818; color: #ffffff; }
+
+    .badge {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      font-weight: 700;
+    }
+
+    .card-top, .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .price { font-weight: 800; font-size: 1rem; }
+    .card-desc { font-size: 0.85rem; color: var(--muted); }
+
+    .swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      display: inline-block;
+    }
+
+    .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .info-section {
+      max-width: 1200px;
+      margin: 0 auto 36px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .panel-box { background: var(--surface); border: 1px solid var(--line); padding: 20px; }
+    .panel-box h3 { font-size: 1.05rem; margin-bottom: 10px; }
+    .panel-box p, .panel-box li { font-size: 0.88rem; color: var(--muted); }
+    .panel-box ul { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -460px;
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--line);
+      z-index: 50;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: right 0.28s ease;
+      box-shadow: -12px 0 36px rgba(0, 0, 0, 0.12);
+      overflow-y: auto;
+    }
+
+    .drawer.open { right: 0; }
+    .bag-list { flex: 1; margin: 14px 0; display: flex; flex-direction: column; gap: 10px; }
+
+    .bag-item {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.86rem;
+    }
+
+    .field {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      font-size: 0.86rem;
+      margin-bottom: 8px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 60;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .order-card {
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+    }
+
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .secret-copy { cursor: pointer; user-select: none; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span>ZoneX Official Storefront • Inside Dhaka ৳80 / Outside Dhaka ৳110</span>
+    <span>Promo Code: <strong>ZONEX10</strong> (10% Off)</span>
+  </div>
+
+  <header>
+    <div class="brand" onclick="resetFilters()">ZoneX</div>
+    <div class="search-box">
+      <input id="search-input" type="text" placeholder="Search tees, hoodies, cargo..." oninput="renderProducts()" />
+    </div>
+    <div class="nav-actions">
+      <button class="btn secondary small" type="button" onclick="openAccountModal()">
+        Account (<span id="account-label">Sign In</span>)
+      </button>
+      <button class="btn secondary small" type="button" onclick="openModal('wishlist-modal')">
+        Wishlist (<span id="wishlist-count">0</span>)
+      </button>
+      <button class="btn small" type="button" onclick="toggleBag(true)">
+        Bag (<span id="bag-count">0</span>)
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>Interactive Streetwear Rack</h1>
+      <p>Tap any card to flip front/back, inspect full details, save to wishlist, or order directly.</p>
+    </div>
+    <div>
+      <select id="sort-select" class="field" style="margin:0; width:auto;" onchange="renderProducts()">
+        <option value="featured">Sort: Featured</option>
+        <option value="low-high">Price: Low to High</option>
+        <option value="high-low">Price: High to Low</option>
+      </select>
+    </div>
+  </section>
+
+  <div class="controls-bar">
+    <div class="cat-pills" id="category-pills"></div>
+    <div style="font-size:0.84rem; color:var(--muted);">
+      Showing <strong id="visible-count">0</strong> products
+    </div>
+  </div>
+
+  <main class="rack-stage">
+    <div class="rack-bar"></div>
+    <div class="rack-grid" id="product-grid"></div>
+  </main>
+
+  <section class="info-section">
+    <div class="panel-box">
+      <h3>About ZoneX</h3>
+      <p>ZoneX crafts structured everyday streetwear, heavyweight tees, loop hoodies, and relaxed utility bottoms designed for comfort, durability, and clean silhouette.</p>
+    </div>
+    <div class="panel-box">
+      <h3>Delivery &amp; Returns</h3>
+      <ul>
+        <li>Inside Dhaka: ৳80 • Outside Dhaka: ৳110</li>
+        <li>Cash on Delivery, bKash, and Nagad supported</li>
+        <li>Easy size exchange within 3 days of delivery</li>
+      </ul>
+    </div>
+    <div class="panel-box">
+      <h3>Order Tracker</h3>
+      <p style="margin-bottom:8px;">Check order status by Order ID (e.g. ZNX-104829):</p>
+      <div style="display:flex; gap:8px;">
+        <input id="track-input" class="field" style="margin:0;" type="text" placeholder="Enter Order ID" />
+        <button class="btn small" type="button" onclick="trackOrder()">Track</button>
+      </div>
+      <div id="track-result" style="margin-top:8px; font-size:0.84rem; font-weight:600;"></div>
+    </div>
+  </section>
+
+  <aside class="drawer" id="bag-drawer">
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Shopping Bag</h3>
+        <button class="btn secondary small" type="button" onclick="toggleBag(false)">Close</button>
+      </div>
+      <div class="bag-list" id="bag-items"></div>
+    </div>
+
+    <div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <input id="promo-input" class="field" style="margin:0;" type="text" placeholder="Promo code (ZONEX10)" />
+        <button class="btn secondary small" type="button" onclick="applyPromo()">Apply</button>
+      </div>
+
+      <input id="chk-name" class="field" type="text" placeholder="Full Name" />
+      <input id="chk-phone" class="field" type="text" placeholder="Phone Number" />
+      <input id="chk-address" class="field" type="text" placeholder="Full Delivery Address" />
+
+      <select id="chk-zone" class="field" onchange="renderBag()">
+        <option value="80">Inside Dhaka (৳80)</option>
+        <option value="110">Outside Dhaka (৳110)</option>
+      </select>
+
+      <select id="chk-payment" class="field">
+        <option value="Cash on Delivery">Cash on Delivery</option>
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+      </select>
+
+      <div style="font-size:0.86rem; display:flex; justify-content:space-between; margin-bottom:4px;">
+        <span>Subtotal</span><span>৳<span id="bag-subtotal">0</span></span>
+      </div>
+      <div style="font-size:0.86rem; display:flex; justify-content:space-between; margin-bottom:4px;">
+        <span>Discount</span><span>-৳<span id="bag-discount">0</span></span>
+      </div>
+      <div style="font-size:0.86rem; display:flex; justify-content:space-between; margin-bottom:6px;">
+        <span>Delivery</span><span>৳<span id="bag-delivery">0</span></span>
+      </div>
+      <div style="font-weight:800; font-size:1rem; display:flex; justify-content:space-between; margin-bottom:12px;">
+        <span>Total</span><span>৳<span id="bag-total">0</span></span>
+      </div>
+
+      <button class="btn" style="width:100%;" type="button" onclick="placeOrder()">Place Order</button>
+    </div>
+  </aside>
+
+  <div class="modal-backdrop" id="detail-modal">
+    <div class="modal-card" id="detail-content"></div>
+  </div>
+
+  <div class="modal-backdrop" id="wishlist-modal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Saved Wishlist</h3>
+        <button class="btn secondary small" type="button" onclick="closeModal('wishlist-modal')">Close</button>
+      </div>
+      <div id="wishlist-items" style="margin-top:14px;"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="account-modal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Customer Account</h3>
+        <button class="btn secondary small" type="button" onclick="closeModal('account-modal')">Close</button>
+      </div>
+      <div id="account-body" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="admin-modal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>ZoneX Admin Panel</h3>
+        <button class="btn secondary small" type="button" onclick="closeModal('admin-modal')">Close</button>
+      </div>
+      <div id="admin-body" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="secret-copy" title="ZoneX Store" onclick="handleFooterSecretClick()">©</span>
+    ZoneX Storefront • All Rights Reserved
+  </footer>
+
+  <script>
+    const STORAGE_KEY = "zonex_full_store_v1";
+    const ADMIN_PASS = "zonex123";
+
+    const DEFAULT_PRODUCTS = [
+      {
+        id: 1,
+        name: "Heavyweight Box Tee",
+        category: "Tees",
+        price: 1250,
+        tag: "CORE TEE • 260 GSM",
+        backNote: "Drop-shoulder fit • Pre-shrunk combed cotton",
+        colors: ["#111111", "#e6e4dc", "#35423a"],
+        sizes: ["M", "L", "XL"],
+        description: "Crafted from 260 GSM heavyweight cotton jersey with a structured collar and relaxed boxy drape.",
+        fabric: "100% Combed Cotton (260 GSM) • Cold wash inside out",
+        reviews: [{ author: "Rafi", rating: 5, comment: "Thick fabric and holds shape after wash." }]
+      },
+      {
+        id: 2,
+        name: "Structured Overshirt",
+        category: "Outerwear",
+        price: 2450,
+        tag: "OUTERWEAR • TWILL",
+        backNote: "Snap front placket • Dual chest utility pockets",
+        colors: ["#22252a", "#6e5844"],
+        sizes: ["M", "L", "XL"],
+        description: "Versatile overshirt that layers cleanly over tees or hoodies for transitional weather.",
+        fabric: "Cotton Twill Blend • Gentle machine wash",
+        reviews: [{ author: "Nadia", rating: 5, comment: "Clean stitching and sharp collar." }]
+      },
+      {
+        id: 3,
+        name: "Studio Loop Hoodie",
+        category: "Hoodies",
+        price: 2890,
+        tag: "FLEECE • 420 GSM",
+        backNote: "Double-lined hood • Ribbed cuffs & hem",
+        colors: ["#171717", "#4f5560", "#d8d5cc"],
+        sizes: ["M", "L", "XL"],
+        description: "Heavy French terry loop hoodie built for warmth without feeling stiff.",
+        fabric: "420 GSM French Terry • Do not bleach",
+        reviews: []
+      },
+      {
+        id: 4,
+        name: "Relaxed Cargo Pant",
+        category: "Bottoms",
+        price: 2650,
+        tag: "BOTTOMS • RIPSTOP",
+        backNote: "Drawcord waist • Expandable side pockets",
+        colors: ["#262b26", "#141414"],
+        sizes: ["30", "32", "34"],
+        description: "Relaxed straight-leg cargo trousers with reinforced seams and practical pocket storage.",
+        fabric: "Cotton Ripstop • Hang dry",
+        reviews: []
+      }
+    ];
+
+    const DEMO_USER = {
+      name: "Demo Customer",
+      phone: "01700000000",
+      email: "customer@zonexbd.com",
+      address: "House 12, Road 4, Dhanmondi, Dhaka"
+    };
+
+    let state = loadState();
+    let activeCategory = "All";
+    let bag = [];
+    let promoDiscountRate = 0;
+    let footerClicks = 0;
+    let adminUnlocked = false;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return {
+        products: DEFAULT_PRODUCTS,
+        wishlist: [],
+        orders: [],
+        user: null,
+        accountTab: "profile"
+      };
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function resetFilters() {
+      activeCategory = "All";
+      const s = document.getElementById("search-input");
+      if (s) s.value = "";
+      renderCategoryPills();
+      renderProducts();
+    }
+
+    function renderCategoryPills() {
+      const cats = ["All", ...new Set(state.products.map(p => p.category))];
+      const el = document.getElementById("category-pills");
+      el.innerHTML = cats.map(c =>
+        `<button class="pill ${c === activeCategory ? "active" : ""}" type="button" onclick="selectCategory('${c}')">${c}</button>`
+      ).join("");
+    }
+
+    function selectCategory(cat) {
+      activeCategory = cat;
+      renderCategoryPills();
+      renderProducts();
+    }
+
+    function getFilteredProducts() {
+      const q = (document.getElementById("search-input")?.value || "").trim().toLowerCase();
+      const sort = document.getElementById("sort-select")?.value || "featured";
+      let list = state.products.filter(p => {
+        const matchCat = activeCategory === "All" || p.category === activeCategory;
+        const matchQ = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+      if (sort === "low-high") list.sort((a, b) => a.price - b.price);
+      if (sort === "high-low") list.sort((a, b) => b.price - a.price);
+      return list;
+    }
+
+    function renderProducts() {
+      const list = getFilteredProducts();
+      document.getElementById("visible-count").textContent = list.length;
+      document.getElementById("wishlist-count").textContent = state.wishlist.length;
+      document.getElementById("account-label").textContent = state.user ? state.user.name.split(" ")[0] : "Sign In";
+
+      const grid = document.getElementById("product-grid");
+      if (!list.length) {
+        grid.innerHTML = `<p style="color:var(--muted);">No products match your filter.</p>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(p => {
+        const wished = state.wishlist.includes(p.id);
+        const swatches = (p.colors || []).map(hex => `<span class="swatch" style="background:${hex};"></span>`).join("");
+        return `
+          <article class="product-card">
+            <div class="card-top">
+              <span class="badge">${p.category}</span>
+              <button class="btn secondary small" type="button" onclick="toggleWishlist(${p.id})">${wished ? "Saved ♥" : "Save ♡"}</button>
+            </div>
+
+            <div class="flip-wrap" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-face">
+                  <div style="font-weight:800; font-size:0.95rem; letter-spacing:0.06em;">${p.tag}</div>
+                  <div style="font-size:0.78rem; color:var(--muted); margin-top:6px;">Tap to flip back view</div>
+                </div>
+                <div class="flip-face flip-back">
+                  <div style="font-weight:700; font-size:0.9rem;">${p.name}</div>
+                  <div style="font-size:0.82rem; opacity:0.88; margin-top:6px;">${p.backNote || "Studio Edition"}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-title-row">
+              <strong>${p.name}</strong>
+              <span class="price">৳${p.price}</span>
+            </div>
+
+            <p class="card-desc">${p.description}</p>
+
+            <div class="swatch-row">
+              <span>Colors:</span> ${swatches}
+            </div>
+
+            <div class="card-actions">
+              <button class="btn secondary small" type="button" onclick="openProductDetail(${p.id})">Details &amp; Reviews</button>
+              <button class="btn small" type="button" onclick="quickAdd(${p.id})">Add to Bag</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function toggleWishlist(id) {
+      const idx = state.wishlist.indexOf(id);
+      if (idx >= 0) state.wishlist.splice(idx, 1);
+      else state.wishlist.push(id);
+      saveState();
+      renderProducts();
+      renderWishlistModal();
+    }
+
+    function renderWishlistModal() {
+      const el = document.getElementById("wishlist-items");
+      const items = state.products.filter(p => state.wishlist.includes(p.id));
+      if (!items.length) {
+        el.innerHTML = `<p style="color:var(--muted); font-size:0.88rem;">Your wishlist is empty.</p>`;
+        return;
+      }
+      el.innerHTML = items.map(p => `
+        <div class="bag-item">
+          <div>
+            <strong>${p.name}</strong>
+            <div style="font-size:0.82rem;">৳${p.price}</div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn small" type="button" onclick="quickAdd(${p.id}); closeModal('wishlist-modal'); toggleBag(true);">Add</button>
+            <button class="btn secondary small" type="button" onclick="toggleWishlist(${p.id})">Remove</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function quickAdd(id) {
+      const p = state.products.find(x => x.id === id);
+      if (!p) return;
+      bag.push({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        size: (p.sizes && p.sizes[0]) || "L",
+        color: (p.colors && p.colors[0]) || "#111111"
+      });
+      renderBag();
+    }
+
+    function openProductDetail(id) {
+      const p = state.products.find(x => x.id === id);
+      if (!p) return;
+      const related = state.products.filter(x => x.id !== p.id).slice(0, 2);
+      const reviewsHtml = (p.reviews || []).length
+        ? p.reviews.map(r => `<div class="order-card"><strong>${r.author}</strong> (${r.rating}/5) — ${r.comment}</div>`).join("")
+        : `<p style="color:var(--muted); font-size:0.85rem;">No reviews yet.</p>`;
+
+      document.getElementById("detail-content").innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3>${p.name} — ৳${p.price}</h3>
+          <button class="btn secondary small" type="button" onclick="closeModal('detail-modal')">Close</button>
+        </div>
+        <p style="margin-top:10px; font-size:0.9rem; color:var(--muted);">${p.description}</p>
+        <p style="margin-top:8px; font-size:0.85rem;"><strong>Fabric &amp; Care:</strong> ${p.fabric}</p>
+
+        <div style="margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="font-size:0.8rem; font-weight:700;">Size</label>
+            <select id="detail-size" class="field" style="margin-top:4px;">
+              ${(p.sizes || ["M", "L", "XL"]).map(s => `<option value="${s}">${s}</option>`).join("")}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.8rem; font-weight:700;">Color</label>
+            <select id="detail-color" class="field" style="margin-top:4px;">
+              ${(p.colors || ["#111111"]).map(c => `<option value="${c}">${c}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+
+        <button class="btn" style="width:100%;" type="button" onclick="addConfiguredItem(${p.id})">Add Selected to Bag</button>
+
+        <div style="margin-top:18px;">
+          <h4 style="margin-bottom:8px;">Customer Reviews</h4>
+          ${reviewsHtml}
+          <input id="rev-author" class="field" type="text" placeholder="Your Name" />
+          <select id="rev-rating" class="field">
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+          </select>
+          <textarea id="rev-comment" class="field" rows="2" placeholder="Write a short review..."></textarea>
+          <button class="btn secondary small" type="button" onclick="addReview(${p.id})">Submit Review</button>
+        </div>
+
+        <div style="margin-top:18px;">
+          <h4 style="margin-bottom:8px;">Related Items</h4>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            ${related.map(r => `
+              <div class="order-card" style="margin:0;">
+                <strong>${r.name}</strong>
+                <div>৳${r.price}</div>
+                <button class="btn secondary small" style="margin-top:6px;" type="button" onclick="openProductDetail(${r.id})">View</button>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+      openModal("detail-modal");
+    }
+
+    function addConfiguredItem(id) {
+      const p = state.products.find(x => x.id === id);
+      if (!p) return;
+      const size = document.getElementById("detail-size")?.value || "L";
+      const color = document.getElementById("detail-color")?.value || "#111111";
+      bag.push({ id: p.id, name: p.name, price: p.price, size, color });
+      renderBag();
+      closeModal("detail-modal");
+      toggleBag(true);
+    }
+
+    function addReview(id) {
+      const p = state.products.find(x => x.id === id);
+      if (!p) return;
+      const author = (document.getElementById("rev-author")?.value || "").trim() || "Verified Buyer";
+      const rating = Number(document.getElementById("rev-rating")?.value || 5);
+      const comment = (document.getElementById("rev-comment")?.value || "").trim();
+      if (!comment) return;
+      p.reviews = p.reviews || [];
+      p.reviews.push({ author, rating, comment });
+      saveState();
+      openProductDetail(id);
+    }
+
+    function toggleBag(open) {
+      const drawer = document.getElementById("bag-drawer");
+      if (typeof open === "boolean") drawer.classList.toggle("open", open);
+      else drawer.classList.toggle("open");
+    }
+
+    function applyPromo() {
+      const code = (document.getElementById("promo-input")?.value || "").trim().toUpperCase();
+      if (code === "ZONEX10") {
+        promoDiscountRate = 0.1;
+        alert("Promo code ZONEX10 applied (10% off items).");
+      } else {
+        promoDiscountRate = 0;
+        alert("Invalid promo code. Try ZONEX10.");
+      }
+      renderBag();
+    }
+
+    function renderBag() {
+      document.getElementById("bag-count").textContent = bag.length;
+      const subtotal = bag.reduce((s, item) => s + item.price, 0);
+      const discount = Math.round(subtotal * promoDiscountRate);
+      const zoneFee = bag.length ? Number(document.getElementById("chk-zone")?.value || 80) : 0;
+      const total = Math.max(0, subtotal - discount) + zoneFee;
+
+      document.getElementById("bag-subtotal").textContent = subtotal;
+      document.getElementById("bag-discount").textContent = discount;
+      document.getElementById("bag-delivery").textContent = zoneFee;
+      document.getElementById("bag-total").textContent = total;
+
+      const list = document.getElementById("bag-items");
+      if (!bag.length) {
+        list.innerHTML = `<p style="color:var(--muted); font-size:0.86rem;">Your bag is empty.</p>`;
+        return;
+      }
+
+      list.innerHTML = bag.map((item, idx) => `
+        <div class="bag-item">
+          <div>
+            <strong>${item.name}</strong>
+            <div style="font-size:0.8rem; color:var(--muted);">Size: ${item.size} • ৳${item.price}</div>
+          </div>
+          <button class="btn secondary small" type="button" onclick="removeFromBag(${idx})">Remove</button>
+        </div>
+      `).join("");
+    }
+
+    function removeFromBag(idx) {
+      bag.splice(idx, 1);
+      renderBag();
+    }
+
+    function placeOrder() {
+      if (!bag.length) {
+        alert("Your bag is empty.");
+        return;
+      }
+      const name = (document.getElementById("chk-name")?.value || "").trim();
+      const phone = (document.getElementById("chk-phone")?.value || "").trim();
+      const address = (document.getElementById("chk-address")?.value || "").trim();
+      const zoneFee = Number(document.getElementById("chk-zone")?.value || 80);
+      const payment = document.getElementById("chk-payment")?.value || "Cash on Delivery";
+
+      if (!name || !phone || !address) {
+        alert("Please fill in your name, phone number, and delivery address.");
+        return;
+      }
+
+      const subtotal = bag.reduce((s, item) => s + item.price, 0);
+      const discount = Math.round(subtotal * promoDiscountRate);
+      const total = Math.max(0, subtotal - discount) + zoneFee;
+      const orderId = "ZNX-" + Math.floor(100000 + Math.random() * 900000);
+
+      const newOrder = {
+        orderId,
+        date: new Date().toLocaleString(),
+        customer: { name, phone, address },
+        zone: zoneFee === 80 ? "Inside Dhaka" : "Outside Dhaka",
+        payment,
+        items: [...bag],
+        subtotal,
+        discount,
+        delivery: zoneFee,
+        total,
+        status: "Confirmed"
+      };
+
+      state.orders.unshift(newOrder);
+      saveState();
+
+      bag = [];
+      promoDiscountRate = 0;
+      const promoEl = document.getElementById("promo-input");
+      if (promoEl) promoEl.value = "";
+      renderBag();
+      toggleBag(false);
+      alert(`Order Confirmed! Order ID: ${orderId} | Total: ৳${total}`);
+    }
+
+    function trackOrder() {
+      const code = (document.getElementById("track-input")?.value || "").trim().toUpperCase();
+      const res = document.getElementById("track-result");
+      if (!code) {
+        res.textContent = "Please enter an Order ID.";
+        return;
+      }
+      const found = state.orders.find(o => o.orderId.toUpperCase() === code);
+      if (!found) {
+        res.textContent = `No order found for ${code} in this browser.`;
+        return;
+      }
+      res.textContent = `${found.orderId}: ${found.status} • Total ৳${found.total} (${found.payment})`;
+    }
+
+    function openAccountModal() {
+      renderAccountModal();
+      openModal("account-modal");
+    }
+
+    function renderAccountModal() {
+      const body = document.getElementById("account-body");
+      if (!state.user) {
+        body.innerHTML = `
+          <p style="font-size:0.88rem; color:var(--muted); margin-bottom:10px;">Sign in or create a customer profile to save your details and view orders.</p>
+          <button class="btn small" style="margin-bottom:12px;" type="button" onclick="loginDemoUser()">1-Click Demo Customer Login</button>
+          <input id="acc-name" class="field" type="text" placeholder="Full Name" />
+          <input id="acc-phone" class="field" type="text" placeholder="Phone Number" />
+          <input id="acc-email" class="field" type="email" placeholder="Email Address" />
+          <input id="acc-address" class="field" type="text" placeholder="Default Delivery Address" />
+          <button class="btn" style="width:100%;" type="button" onclick="saveNewCustomer()">Create / Sign In Profile</button>
+        `;
+        return;
+      }
+
+      const tab = state.accountTab || "profile";
+      let tabContent = "";
+
+      if (tab === "profile") {
+        tabContent = `
+          <input id="edit-name" class="field" type="text" value="${state.user.name}" placeholder="Name" />
+          <input id="edit-phone" class="field" type="text" value="${state.user.phone}" placeholder="Phone" />
+          <input id="edit-email" class="field" type="email" value="${state.user.email || ""}" placeholder="Email" />
+          <input id="edit-address" class="field" type="text" value="${state.user.address}" placeholder="Address" />
+          <div style="display:flex; gap:8px;">
+            <button class="btn small" type="button" onclick="updateCustomerProfile()">Save Profile</button>
+            <button class="btn secondary small" type="button" onclick="fillCheckoutFromProfile()">Use in Bag Checkout</button>
+            <button class="btn secondary small" type="button" onclick="logoutCustomer()">Sign Out</button>
+          </div>
+        `;
+      } else if (tab === "orders") {
+        tabContent = state.orders.length
+          ? state.orders.map(o => `
+              <div class="order-card">
+                <strong>${o.orderId}</strong> — ${o.status}
+                <div style="font-size:0.8rem; color:var(--muted);">${o.date} • Total: ৳${o.total}</div>
+                <div style="font-size:0.82rem; margin-top:4px;">Items: ${o.items.map(i => `${i.name} (${i.size})`).join(", ")}</div>
+              </div>
+            `).join("")
+          : `<p style="color:var(--muted); font-size:0.86rem;">No orders placed yet.</p>`;
+      } else if (tab === "wishlist") {
+        const wItems = state.products.filter(p => state.wishlist.includes(p.id));
+        tabContent = wItems.length
+          ? wItems.map(p => `<div class="bag-item"><strong>${p.name}</strong><span>৳${p.price}</span></div>`).join("")
+          : `<p style="color:var(--muted); font-size:0.86rem;">No saved items.</p>`;
+      } else {
+        tabContent = `<div class="order-card"><strong>Default Address:</strong><br/>${state.user.address || "Not set"}</div>`;
+      }
+
+      body.innerHTML = `
+        <div class="tabs">
+          <button class="pill ${tab === "profile" ? "active" : ""}" type="button" onclick="switchAccountTab('profile')">My Profile</button>
+          <button class="pill ${tab === "orders" ? "active" : ""}" type="button" onclick="switchAccountTab('orders')">Order History (${state.orders.length})</button>
+          <button class="pill ${tab === "wishlist" ? "active" : ""}" type="button" onclick="switchAccountTab('wishlist')">Saved Wishlist</button>
+          <button class="pill ${tab === "address" ? "active" : ""}" type="button" onclick="switchAccountTab('address')">Saved Address</button>
+        </div>
+        ${tabContent}
+      `;
+    }
+
+    function switchAccountTab(tab) {
+      state.accountTab = tab;
+      renderAccountModal();
+    }
+
+    function loginDemoUser() {
+      state.user = { ...DEMO_USER };
+      saveState();
+      fillCheckoutFromProfile();
+      renderProducts();
+      renderAccountModal();
+    }
+
+    function saveNewCustomer() {
+      const name = (document.getElementById("acc-name")?.value || "").trim();
+      const phone = (document.getElementById("acc-phone")?.value || "").trim();
+      const email = (document.getElementById("acc-email")?.value || "").trim();
+      const address = (document.getElementById("acc-address")?.value || "").trim();
+      if (!name || !phone) {
+        alert("Please enter your name and phone number.");
+        return;
+      }
+      state.user = { name, phone, email, address };
+      saveState();
+      fillCheckoutFromProfile();
+      renderProducts();
+      renderAccountModal();
+    }
+
+    function updateCustomerProfile() {
+      state.user = {
+        name: (document.getElementById("edit-name")?.value || "").trim() || state.user.name,
+        phone: (document.getElementById("edit-phone")?.value || "").trim() || state.user.phone,
+        email: (document.getElementById("edit-email")?.value || "").trim(),
+        address: (document.getElementById("edit-address")?.value || "").trim()
+      };
+      saveState();
+      renderProducts();
+      renderAccountModal();
+      alert("Profile updated.");
+    }
+
+    function fillCheckoutFromProfile() {
+      if (!state.user) return;
+      const n = document.getElementById("chk-name");
+      const p = document.getElementById("chk-phone");
+      const a = document.getElementById("chk-address");
+      if (n) n.value = state.user.name || "";
+      if (p) p.value = state.user.phone || "";
+      if (a) a.value = state.user.address || "";
+    }
+
+    function logoutCustomer() {
+      state.user = null;
+      saveState();
+      renderProducts();
+      renderAccountModal();
+    }
+
+    function handleFooterSecretClick() {
+      footerClicks += 1;
+      if (footerClicks >= 3) {
+        footerClicks = 0;
+        openAdminModal();
+      }
+    }
+
+    function openAdminModal() {
+      renderAdminModal();
+      openModal("admin-modal");
+    }
+
+    function renderAdminModal() {
+      const body = document.getElementById("admin-body");
+      if (!adminUnlocked) {
+        body.innerHTML = `
+          <p style="font-size:0.86rem; color:var(--muted); margin-bottom:8px;">Enter admin password to manage products and orders.</p>
+          <input id="admin-pass-input" class="field" type="password" placeholder="Admin Passcode" />
+          <button class="btn small" type="button" onclick="unlockAdmin()">Unlock Admin</button>
+        `;
+        return;
+      }
+
+      const ordersHtml = state.orders.length
+        ? state.orders.map((o, i) => `
+            <div class="order-card">
+              <strong>${o.orderId}</strong> • ৳${o.total} • Status: <strong>${o.status}</strong>
+              <div style="font-size:0.8rem; color:var(--muted);">${o.customer.name} (${o.customer.phone}) — ${o.customer.address}</div>
+              <div style="margin-top:6px; display:flex; gap:6px;">
+                <button class="btn secondary small" type="button" onclick="setOrderStatus(${i}, 'Shipped')">Mark Shipped</button>
+                <button class="btn secondary small" type="button" onclick="setOrderStatus(${i}, 'Delivered')">Mark Delivered</button>
+              </div>
+            </div>
+          `).join("")
+        : `<p style="color:var(--muted); font-size:0.86rem;">No orders yet.</p>`;
+
+      body.innerHTML = `
+        <h4 style="margin-bottom:8px;">Add New Product</h4>
+        <input id="adm-pname" class="field" type="text" placeholder="Product Name" />
+        <input id="adm-pcat" class="field" type="text" placeholder="Category (e.g. Tees, Hoodies)" />
+        <input id="adm-pprice" class="field" type="number" placeholder="Price in BDT" />
+        <input id="adm-pdesc" class="field" type="text" placeholder="Short Description" />
+        <button class="btn small" style="margin-bottom:16px;" type="button" onclick="adminAddProduct()">Add Product</button>
+
+        <h4 style="margin-bottom:8px;">Manage Orders (${state.orders.length})</h4>
+        ${ordersHtml}
+      `;
+    }
+
+    function unlockAdmin() {
+      const val = (document.getElementById("admin-pass-input")?.value || "").trim();
+      if (val === ADMIN_PASS) {
+        adminUnlocked = true;
+        renderAdminModal();
+      } else {
+        alert("Incorrect passcode.");
+      }
+    }
+
+    function adminAddProduct() {
+      const name = (document.getElementById("adm-pname")?.value || "").trim();
+      const category = (document.getElementById("adm-pcat")?.value || "").trim() || "Streetwear";
+      const price = Number(document.getElementById("adm-pprice")?.value || 0);
+      const description = (document.getElementById("adm-pdesc")?.value || "").trim() || "ZoneX studio release.";
+      if (!name || !price) {
+        alert("Enter product name and valid price.");
+        return;
+      }
+      state.products.push({
+        id: Date.now(),
+        name,
+        category,
+        price,
+        tag: category.toUpperCase(),
+        backNote: "ZoneX Studio Release",
+        colors: ["#111111", "#666666"],
+        sizes: ["M", "L", "XL"],
+        description,
+        fabric: "Premium Cotton Blend",
+        reviews: []
+      });
+      saveState();
+      renderCategoryPills();
+      renderProducts();
+      renderAdminModal();
+    }
+
+    function setOrderStatus(index, status) {
+      if (!state.orders[index]) return;
+      state.orders[index].status = status;
+      saveState();
+      renderAdminModal();
+    }
+
+    function openModal(id) {
+      if (id === "wishlist-modal") renderWishlistModal();
+      document.getElementById(id)?.classList.add("open");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id)?.classList.remove("open");
+    }
+
+    window.addEventListener("hashchange", () => {
+      if (window.location.hash === "#admin") openAdminModal();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") || (e.altKey && e.key.toLowerCase() === "a")) {
+        openAdminModal();
+      }
+    });
+
+    renderCategoryPills();
+    renderProducts();
+    renderBag();
+    if (window.location.hash === "#admin") openAdminModal();
+  </script>
+</body>
+</html>
